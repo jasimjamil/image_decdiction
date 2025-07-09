@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package image_classification;
+
+service ImageClassificationService {
+  rpc ClassifyImage(ImageRequest) returns (ClassificationResponse) {}
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) {}
+}
+
+message ImageRequest {
+  bytes image_data = 1;
+  string image_format = 2;
+}
+
+message ClassificationResponse {
+  string label = 1;
+  float confidence = 2;
+  float inference_time = 3;
+}
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  bool is_healthy = 1;
+  string version = 2;
+} 

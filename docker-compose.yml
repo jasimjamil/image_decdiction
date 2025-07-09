@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
+
+  inference-service:
+    build: .
+    ports:
+      - "50051:50051"
+      - "8000:8000"
+    volumes:
+      - ./inference_service:/app/inference_service
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  streaming-simulator:
+    build: .
+    command: python streaming_simulator/video_stream_producer.py
+    depends_on:
+      - inference-service
+      - kafka
+    volumes:
+      - ./streaming_simulator:/app/streaming_simulator
+    environment:
+      - KAFKA_BROKER=kafka:9092
+      - INFERENCE_SERVICE_HOST=inference-service
+      - PYTHONUNBUFFERED=1 
