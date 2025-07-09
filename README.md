@@ -47,4 +47,4 @@ python test_grpc_endpoint.py
 ## Optional Optimizations
 - TorchScript model conversion
 - ONNX runtime support
-- GPU/CPU fallback 
+- GPU/CPU fallback
